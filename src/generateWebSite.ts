@@ -13,7 +13,7 @@ export const generateWebSite = () => {
         (data.prompt as string) || "Fais moi un site d'agence d'architecte";
       console.log("promptValue: ", promptValue);
 
-      const showWebSiteThrottled = throttle(showWebSite, 1000);
+      const showWebSiteThrottled = throttle(showWebSite, 2000);
 
       const response = await manageCache(promptValue, async () => {
         let response = "";
