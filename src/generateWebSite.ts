@@ -1,3 +1,4 @@
+import { manageCache } from "./cache";
 import { requestAI } from "./requestAI";
 
 export const generateWebSite = () => {
@@ -11,7 +12,12 @@ export const generateWebSite = () => {
         (data.prompt as string) || "Fais moi un site d'agence d'architecte";
       console.log("promptValue: ", promptValue);
 
-      await requestAI(promptValue);
+      const response = await manageCache(
+        promptValue,
+        async () => await requestAI(promptValue),
+      );
+
+      showWebSite(response);
     } catch (err) {
       console.log("err: ", err);
       if (err instanceof Error) {
@@ -19,4 +25,9 @@ export const generateWebSite = () => {
       }
     }
   });
+};
+
+const showWebSite = (response: string) => {
+  const iframe = document.querySelector("iframe") as HTMLIFrameElement;
+  iframe.srcdoc = response;
 };
