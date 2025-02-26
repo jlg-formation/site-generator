@@ -12,10 +12,17 @@ export const generateWebSite = () => {
         (data.prompt as string) || "Fais moi un site d'agence d'architecte";
       console.log("promptValue: ", promptValue);
 
-      const response = await manageCache(
-        promptValue,
-        async () => await requestAI(promptValue),
-      );
+      const response = await manageCache(promptValue, async () => {
+        let response = "";
+        const stream = await requestAI(promptValue);
+        for await (const part of stream) {
+          const chunck = part.choices[0]?.delta?.content || "";
+          console.log("chunck: ", chunck);
+          response += chunck;
+          showWebSite(response);
+        }
+        return response;
+      });
 
       showWebSite(response);
     } catch (err) {

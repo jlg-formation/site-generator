@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { Stream } from "openai/streaming.mjs";
 
 const checkApiKey = (apiKey: string | null | undefined): apiKey is string => {
   if (apiKey === null || apiKey === undefined) {
@@ -29,12 +30,14 @@ const getOpenAI = () => {
   return openai;
 };
 
-export const requestAI = async (promptValue: string): Promise<string> => {
+export const requestAI = async (
+  promptValue: string,
+): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> => {
   const openai = getOpenAI();
 
   console.log("start to send request to openai...");
 
-  const completion = await openai.chat.completions.create({
+  const stream = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
       {
@@ -54,13 +57,8 @@ Enleves les lignes avec \`\`\`.
       },
     ],
     store: true,
+    stream: true,
   });
 
-  console.log(completion.choices[0].message);
-  const response = completion.choices[0].message.content;
-  if (!response) {
-    throw new Error("No response from OpenAI.");
-  }
-  console.log("response: ", response);
-  return response;
+  return stream;
 };
