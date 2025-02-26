@@ -39,7 +39,13 @@ export const requestAI = async (promptValue: string) => {
     messages: [
       {
         role: "system",
-        content: "Donne une reponse tres courte : une phrase maximum.",
+        content: `
+Tu generes des sites web.
+Tes réponses sont en code HTML seulement.
+Utilises du CSS avec des classes TailwindCSS.
+Ajoute un lien vers le CDN de TailwindCSS.
+Enleves les lignes avec \`\`\`.
+`,
       },
       {
         role: "user",
