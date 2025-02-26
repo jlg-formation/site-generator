@@ -4,7 +4,7 @@ import { manageCache } from "./cache";
 import { requestAI } from "./requestAI";
 import { sha1 } from "./utils/sha1";
 
-const pastConversation: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
+export const pastConversation: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
   [];
 
 export const generateWebSite = () => {
@@ -34,10 +34,11 @@ export const generateWebSite = () => {
             response += chunck;
             showWebSiteThrottled(response);
           }
-          pastConversation.push({ role: "assistant", content: response });
           return response;
         },
       );
+
+      pastConversation.push({ role: "assistant", content: response });
 
       showWebSiteThrottled(response);
     } catch (err) {
@@ -54,7 +55,7 @@ const showWebSite = (response: string) => {
   iframe.srcdoc = response;
 };
 
-const showConversation = (
+export const showConversation = (
   conversation: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
 ) => {
   const conversationElement = document.querySelector(
