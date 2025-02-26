@@ -4,10 +4,37 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Generateur de site</title>
+    <title>Générateur de site</title>
   </head>
-  <body>
-    <p class="text-3xl font-bold underline">Ceci est un générateur de site</p>
+  <body class="flex h-screen w-screen">
+    <aside class="bg-gray-50 w-80 flex flex-col justify-between p-4">
+      <div class="flex flex-col gap-4">
+        <header>
+          <h1 class="text-2xl font-bold">Générateur de site</h1>
+        </header>
+        <main class="flex flex-col gap-4">
+          <div>Ceci est un élement de conversation passée.</div>
+          <div>Ceci est un élement de conversation passée.</div>
+        </main>
+      </div>
+      <form class="flex flex-col gap-4">
+        <textarea
+          class="w-full h-20 p-2 rounded bg-white border"
+          placeholder="Entrez votre texte ici"
+        ></textarea>
+        <button
+          class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 cursor-pointer active:bg-blue-700"
+        >
+          Envoyer
+        </button>
+        <button
+          class="bg-gray-100 text-red-500 p-2 rounded hover:bg-gray-200 cursor-pointer active:bg-gray-300"
+        >
+          Vider la conversation
+        </button>
+      </form>
+    </aside>
+    <main class="bg-white"></main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
