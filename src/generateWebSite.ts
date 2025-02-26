@@ -1,3 +1,4 @@
+import { throttle } from "lodash";
 import { manageCache } from "./cache";
 import { requestAI } from "./requestAI";
 
@@ -12,19 +13,20 @@ export const generateWebSite = () => {
         (data.prompt as string) || "Fais moi un site d'agence d'architecte";
       console.log("promptValue: ", promptValue);
 
+      const showWebSiteThrottled = throttle(showWebSite, 1000);
+
       const response = await manageCache(promptValue, async () => {
         let response = "";
         const stream = await requestAI(promptValue);
         for await (const part of stream) {
           const chunck = part.choices[0]?.delta?.content || "";
-          console.log("chunck: ", chunck);
           response += chunck;
-          showWebSite(response);
+          showWebSiteThrottled(response);
         }
         return response;
       });
 
-      showWebSite(response);
+      showWebSiteThrottled(response);
     } catch (err) {
       console.log("err: ", err);
       if (err instanceof Error) {
