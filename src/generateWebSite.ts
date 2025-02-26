@@ -1,11 +1,8 @@
 import { throttle } from "lodash";
-import OpenAI from "openai";
 import { manageCache } from "./cache";
+import { conversation, showConversation } from "./conversation";
 import { requestAI } from "./requestAI";
 import { sha1 } from "./utils/sha1";
-
-export const pastConversation: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
-  [];
 
 export const generateWebSite = () => {
   const form = document.querySelector(".generate-website") as HTMLFormElement;
@@ -18,17 +15,17 @@ export const generateWebSite = () => {
         (data.prompt as string) || "Fais moi un site d'agence d'architecte";
       console.log("promptValue: ", promptValue);
 
-      pastConversation.push({ role: "user", content: promptValue });
+      conversation.push({ role: "user", content: promptValue });
 
-      showConversation(pastConversation);
+      showConversation(conversation);
 
       const showWebSiteThrottled = throttle(showWebSite, 2000);
 
       const response = await manageCache(
-        await sha1(JSON.stringify(pastConversation)),
+        await sha1(JSON.stringify(conversation)),
         async () => {
           let response = "";
-          const stream = await requestAI(pastConversation);
+          const stream = await requestAI(conversation);
           for await (const part of stream) {
             const chunck = part.choices[0]?.delta?.content || "";
             response += chunck;
@@ -38,7 +35,7 @@ export const generateWebSite = () => {
         },
       );
 
-      pastConversation.push({ role: "assistant", content: response });
+      conversation.push({ role: "assistant", content: response });
 
       showWebSiteThrottled(response);
     } catch (err) {
@@ -53,21 +50,4 @@ export const generateWebSite = () => {
 const showWebSite = (response: string) => {
   const iframe = document.querySelector("iframe") as HTMLIFrameElement;
   iframe.srcdoc = response;
-};
-
-export const showConversation = (
-  conversation: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-) => {
-  const conversationElement = document.querySelector(
-    ".conversation",
-  ) as HTMLElement;
-  conversationElement.innerHTML = "";
-  conversation
-    .filter((c) => c.role === "user")
-    .forEach((message) => {
-      const messageElement = document.createElement("div");
-      messageElement.classList.add("message");
-      messageElement.textContent = message.content as string;
-      conversationElement.appendChild(messageElement);
-    });
 };

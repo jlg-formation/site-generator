@@ -1,4 +1,4 @@
-import { pastConversation, showConversation } from "./generateWebSite";
+import { conversation, showConversation } from "./conversation";
 
 export const setupDeleteConversation = () => {
   const btn = document.querySelector(
@@ -7,7 +7,7 @@ export const setupDeleteConversation = () => {
 
   btn.addEventListener("click", () => {
     console.log("remove conversation");
-    pastConversation.splice(0, pastConversation.length);
-    showConversation(pastConversation);
+    conversation.splice(0, conversation.length);
+    showConversation(conversation);
   });
 };
