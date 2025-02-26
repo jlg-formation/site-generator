@@ -31,7 +31,7 @@ const getOpenAI = () => {
 };
 
 export const requestAI = async (
-  promptValue: string,
+  conversation: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
 ): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> => {
   const openai = getOpenAI();
 
@@ -51,10 +51,7 @@ Si tu ajoutes des images, utilise toujours le même lien https://cdn.shopify.com
 Enleves les lignes avec \`\`\`.
 `,
       },
-      {
-        role: "user",
-        content: promptValue,
-      },
+      ...conversation,
     ],
     store: true,
     stream: true,
