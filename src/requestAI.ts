@@ -1,16 +1,23 @@
 import OpenAI from "openai";
 
+const checkApiKey = (apiKey: string | null | undefined): apiKey is string => {
+  if (apiKey === null || apiKey === undefined) {
+    return false;
+  }
+  return apiKey.length > 100;
+};
+
 let openai: OpenAI | undefined;
 const getOpenAI = () => {
   if (openai) {
     return openai;
   }
   let apiKey = window.localStorage.getItem("openai-api-key");
-  if (apiKey === null) {
+  if (!checkApiKey(apiKey)) {
     apiKey = window.prompt(
-      "Enter your OpenAI API key. This will be stored in your browser localstorage and never sent anywhere.",
+      "Entrer une clé openai. Cette clé ne sera jamais envoyée sur internet et restera dans le localstorage du navigateur internet.",
     );
-    if (apiKey === null) {
+    if (!checkApiKey(apiKey)) {
       throw new Error("No API key provided.");
     }
     window.localStorage.setItem("openai-api-key", apiKey);
@@ -26,6 +33,7 @@ export const requestAI = async (promptValue: string) => {
   const openai = getOpenAI();
 
   console.log("start to send request to openai...");
+
   const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
